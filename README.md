@@ -1,4 +1,4 @@
-# DAY 1
+
 #  Welcome to React Overview! 🚀✨
 
 React is a powerful JavaScript library for building dynamic, interactive, and user-friendly web applications. Let's dive into its features, why it was created, and how it stands out! 🌟
@@ -121,9 +121,6 @@ Here are some common interview questions to help you prepare based on the inform
 
 ---
 
-
-
-# DAY : 2  
 # 🛠️ React App Setup: Node.js, `create-react-app`, and `Vite`
 
 ---
