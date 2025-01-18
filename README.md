@@ -1616,3 +1616,1116 @@ export default ObjectForm;
 
 Both methods are valid for handling form data in React, and the choice depends on the complexity of the form. If you have a simple form with a few fields, using individual state variables may be the easiest approach. However, for more complex forms with many fields, using a single object to manage the state will make your code more organized and maintainable.
 
+# React Hook: `useCallback` ✨
+
+The `useCallback` hook in React is used to memoize callback functions. This helps in optimizing the performance of functional components by preventing unnecessary re-creation of functions during re-renders.
+
+---
+
+## Why Use `useCallback`? 🤔
+
+React components re-render when their state or props change. This can cause inline functions to be re-created on every render, potentially leading to performance issues if those functions are passed as props to child components. 
+
+By wrapping a function with `useCallback`, you ensure that the same instance of the function is used unless its dependencies change.
+
+---
+
+## Syntax 🛠️
+
+```javascript
+const memoizedCallback = useCallback(
+  () => {
+    // Your callback logic here
+  },
+  [dependencies] // List of dependencies
+);
+```
+
+- **Callback function**: The function to be memoized.
+- **Dependencies**: An array of dependencies that the function depends on. The function will be recreated only if one of these dependencies changes.
+
+---
+
+## Example Use Cases 🚀
+
+Here are five examples demonstrating the use of `useCallback`:
+
+### 1. **Basic Example** 🟢
+Memoizing a simple callback function:
+
+```javascript
+import React, { useState, useCallback } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  const increment = useCallback(() => {
+    setCount((prevCount) => prevCount + 1);
+  }, []);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+**Output:**
+```
+Count: 0
+[Click "Increment"]
+Count: 1
+```
+
+### 2. **Preventing Unnecessary Re-Renders** 🔄
+Passing a memoized function as a prop to a child component:
+
+```javascript
+import React, { useState, useCallback } from 'react';
+
+function Child({ onClick }) {
+  console.log('Child rendered');
+  return <button onClick={onClick}>Click Me</button>;
+}
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = useCallback(() => {
+    console.log('Button clicked');
+  }, []);
+
+  return (
+    <div>
+      <p>Parent Count: {count}</p>
+      <button onClick={() => setCount((prev) => prev + 1)}>Increment Parent</button>
+      <Child onClick={handleClick} />
+    </div>
+  );
+}
+
+export default Parent;
+```
+
+**Output:**
+```
+Parent Count: 0
+[Click "Increment Parent"]
+Parent Count: 1
+Child rendered
+[Click "Click Me"]
+Button clicked
+```
+
+### 3. **Dependency Example** ⚙️
+Updating the callback function when a dependency changes:
+
+```javascript
+import React, { useState, useCallback } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  const [multiplier, setMultiplier] = useState(1);
+
+  const increment = useCallback(() => {
+    setCount((prevCount) => prevCount + multiplier);
+  }, [multiplier]);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment by {multiplier}</button>
+      <button onClick={() => setMultiplier((prev) => prev + 1)}>Increase Multiplier</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+**Output:**
+```
+Count: 0
+[Click "Increment by 1"]
+Count: 1
+[Click "Increase Multiplier"]
+[Click "Increment by 2"]
+Count: 3
+```
+
+### 4. **With `React.memo`** 🧠
+Using `useCallback` with `React.memo` to prevent child re-renders:
+
+```javascript
+import React, { useState, useCallback, memo } from 'react';
+
+const Child = memo(({ onClick }) => {
+  console.log('Child rendered');
+  return <button onClick={onClick}>Click Me</button>;
+});
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = useCallback(() => {
+    console.log('Button clicked');
+  }, []);
+
+  return (
+    <div>
+      <p>Parent Count: {count}</p>
+      <button onClick={() => setCount((prev) => prev + 1)}>Increment Parent</button>
+      <Child onClick={handleClick} />
+    </div>
+  );
+}
+
+export default Parent;
+```
+
+**Output:**
+```
+Parent Count: 0
+Child rendered
+[Click "Increment Parent"]
+Parent Count: 1
+[Click "Click Me"]
+Button clicked
+```
+
+### 5. **Avoiding Inline Function Creation** ✂️
+Using `useCallback` to prevent inline function re-creation:
+
+```javascript
+import React, { useState, useCallback } from 'react';
+
+function App() {
+  const [text, setText] = useState('');
+
+  const handleChange = useCallback((event) => {
+    setText(event.target.value);
+  }, []);
+
+  return (
+    <div>
+      <input type="text" value={text} onChange={handleChange} />
+      <p>Input: {text}</p>
+    </div>
+  );
+}
+
+export default App;
+```
+
+**Output:**
+```
+[Type "Hello"]
+Input: Hello
+[Type "World"]
+Input: HelloWorld
+```
+
+---
+
+## Key Points 📌
+
+1. Use `useCallback` when passing callbacks to child components that rely on `React.memo`.
+2. Ensure you provide all necessary dependencies in the dependency array.
+3. Overusing `useCallback` can add complexity. Use it only when there are actual performance concerns.
+
+---
+
+## Additional Resources 📚
+
+- [React Official Documentation on useCallback](https://react.dev/reference/react/useCallback)
+- [React.memo](https://react.dev/reference/react/memo)
+
+
+
+
+
+
+
+
+
+<!-- # React Hook: `useCallback` ✨
+
+The `useCallback` hook in React is used to memoize callback functions. This helps in optimizing the performance of functional components by preventing unnecessary re-creation of functions during re-renders.
+
+---
+
+## Why Use `useCallback`? 🤔
+
+React components re-render when their state or props change. This can cause inline functions to be re-created on every render, potentially leading to performance issues if those functions are passed as props to child components. 
+
+By wrapping a function with `useCallback`, you ensure that the same instance of the function is used unless its dependencies change.
+
+---
+
+## Syntax 🛠️
+
+```javascript
+const memoizedCallback = useCallback(
+  () => {
+    // Your callback logic here
+  },
+  [dependencies] // List of dependencies
+);
+```
+
+- **Callback function**: The function to be memoized.
+- **Dependencies**: An array of dependencies that the function depends on. The function will be recreated only if one of these dependencies changes.
+
+---
+
+## Example Use Cases 🚀
+
+Here are five examples demonstrating the use of `useCallback`:
+
+### 1. **Basic Example** 🟢
+Memoizing a simple callback function:
+
+```javascript
+import React, { useState, useCallback } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  const increment = useCallback(() => {
+    setCount((prevCount) => prevCount + 1);
+  }, []);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+### 2. **Preventing Unnecessary Re-Renders** 🔄
+Passing a memoized function as a prop to a child component:
+
+```javascript
+import React, { useState, useCallback } from 'react';
+
+function Child({ onClick }) {
+  console.log('Child rendered');
+  return <button onClick={onClick}>Click Me</button>;
+}
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = useCallback(() => {
+    console.log('Button clicked');
+  }, []);
+
+  return (
+    <div>
+      <p>Parent Count: {count}</p>
+      <button onClick={() => setCount((prev) => prev + 1)}>Increment Parent</button>
+      <Child onClick={handleClick} />
+    </div>
+  );
+}
+
+export default Parent;
+```
+
+### 3. **Dependency Example** ⚙️
+Updating the callback function when a dependency changes:
+
+```javascript
+import React, { useState, useCallback } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  const [multiplier, setMultiplier] = useState(1);
+
+  const increment = useCallback(() => {
+    setCount((prevCount) => prevCount + multiplier);
+  }, [multiplier]);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment by {multiplier}</button>
+      <button onClick={() => setMultiplier((prev) => prev + 1)}>Increase Multiplier</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+### 4. **With `React.memo`** 🧠
+Using `useCallback` with `React.memo` to prevent child re-renders:
+
+```javascript
+import React, { useState, useCallback, memo } from 'react';
+
+const Child = memo(({ onClick }) => {
+  console.log('Child rendered');
+  return <button onClick={onClick}>Click Me</button>;
+});
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = useCallback(() => {
+    console.log('Button clicked');
+  }, []);
+
+  return (
+    <div>
+      <p>Parent Count: {count}</p>
+      <button onClick={() => setCount((prev) => prev + 1)}>Increment Parent</button>
+      <Child onClick={handleClick} />
+    </div>
+  );
+}
+
+export default Parent;
+```
+
+### 5. **Avoiding Inline Function Creation** ✂️
+Using `useCallback` to prevent inline function re-creation:
+
+```javascript
+import React, { useState, useCallback } from 'react';
+
+function App() {
+  const [text, setText] = useState('');
+
+  const handleChange = useCallback((event) => {
+    setText(event.target.value);
+  }, []);
+
+  return (
+    <div>
+      <input type="text" value={text} onChange={handleChange} />
+      <p>Input: {text}</p>
+    </div>
+  );
+}
+
+export default App;
+```
+
+---
+
+## Key Points 📌
+
+1. Use `useCallback` when passing callbacks to child components that rely on `React.memo`.
+2. Ensure you provide all necessary dependencies in the dependency array.
+3. Overusing `useCallback` can add complexity. Use it only when there are actual performance concerns.
+
+---
+
+## Additional Resources 📚
+
+- [React Official Documentation on useCallback](https://react.dev/reference/react/useCallback)
+- [React.memo](https://react.dev/reference/react/memo)
+
+Happy Coding! 🎉 -->
+
+
+# React Hook: `useRef` 🔗
+
+The `useRef` hook in React is a powerful tool for accessing and persisting values across renders without triggering re-renders. It is commonly used to reference DOM elements or to store mutable values.
+
+---
+
+## Why Use `useRef`? 🤔
+
+1. **Accessing DOM Elements**: You can directly reference a DOM element to perform imperative operations like focusing an input field.
+2. **Persisting Mutable Values**: Store a value that persists across renders without causing the component to re-render when it changes.
+
+---
+
+## Syntax 🛠️
+
+```javascript
+const refContainer = useRef(initialValue);
+```
+
+- **`refContainer`**: An object with a `current` property.
+- **`initialValue`**: The initial value assigned to the `current` property.
+
+---
+
+## Example Use Cases 🚀
+
+Here are 10 examples showcasing the power of `useRef`:
+
+### 1. **Accessing a DOM Element** 📋
+
+```javascript
+import React, { useRef } from 'react';
+
+function FocusInput() {
+  const inputRef = useRef(null);
+
+  const handleFocus = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" placeholder="Type something..." />
+      <button onClick={handleFocus}>Focus Input</button>
+    </div>
+  );
+}
+
+export default FocusInput;
+```
+
+**Output:**
+```
+[Click "Focus Input"]
+The input field gets focused.
+```
+
+### 2. **Storing Mutable Values** 🛠️
+
+```javascript
+import React, { useRef, useState } from 'react';
+
+function Counter() {
+  const countRef = useRef(0);
+  const [renderCount, setRenderCount] = useState(0);
+
+  const increment = () => {
+    countRef.current += 1;
+    console.log(`Current count: ${countRef.current}`);
+  };
+
+  return (
+    <div>
+      <p>Render Count: {renderCount}</p>
+      <button onClick={increment}>Increment Count</button>
+      <button onClick={() => setRenderCount((prev) => prev + 1)}>Re-render</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+**Output:**
+```
+[Click "Increment Count"]
+Console logs: "Current count: 1"
+[Click "Re-render"]
+Render Count updates without resetting `countRef`.
+```
+
+### 3. **Tracking Previous State** 🔄
+
+```javascript
+import React, { useRef, useEffect, useState } from 'react';
+
+function PreviousStateTracker() {
+  const [count, setCount] = useState(0);
+  const prevCountRef = useRef();
+
+  useEffect(() => {
+    prevCountRef.current = count;
+  }, [count]);
+
+  return (
+    <div>
+      <p>Current Count: {count}</p>
+      <p>Previous Count: {prevCountRef.current}</p>
+      <button onClick={() => setCount((prev) => prev + 1)}>Increment</button>
+    </div>
+  );
+}
+
+export default PreviousStateTracker;
+```
+
+**Output:**
+```
+Current Count: 1
+Previous Count: 0
+```
+
+### 4. **Avoiding Re-renders** ⚡
+
+```javascript
+import React, { useRef, useState } from 'react';
+
+function AvoidRerenders() {
+  const renders = useRef(0);
+  const [state, setState] = useState(0);
+
+  renders.current++;
+
+  return (
+    <div>
+      <p>Component Renders: {renders.current}</p>
+      <button onClick={() => setState((prev) => prev + 1)}>Update State</button>
+    </div>
+  );
+}
+
+export default AvoidRerenders;
+```
+
+**Output:**
+```
+Component Renders: Increments with each re-render.
+```
+
+### 5. **Controlling Animations** 🎥
+
+```javascript
+import React, { useRef, useEffect } from 'react';
+
+function AnimationController() {
+  const requestRef = useRef();
+  const previousTimeRef = useRef();
+
+  const animate = (time) => {
+    if (previousTimeRef.current != null) {
+      const deltaTime = time - previousTimeRef.current;
+      console.log(`Delta Time: ${deltaTime}`);
+    }
+    previousTimeRef.current = time;
+    requestRef.current = requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    requestRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, []);
+
+  return <div>Animating... Check the console logs!</div>;
+}
+
+export default AnimationController;
+```
+
+**Output:**
+```
+Console logs delta time between animation frames.
+```
+
+### 6. **Integrating Third-Party Libraries** 🌐
+
+```javascript
+import React, { useRef, useEffect } from 'react';
+import Chart from 'chart.js/auto';
+
+function ChartComponent() {
+  const chartRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = chartRef.current.getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow'],
+        datasets: [
+          {
+            label: '# of Votes',
+            data: [12, 19, 3],
+            backgroundColor: ['red', 'blue', 'yellow'],
+          },
+        ],
+      },
+    });
+  }, []);
+
+  return <canvas ref={chartRef}></canvas>;
+}
+
+export default ChartComponent;
+```
+
+**Output:**
+```
+Renders a bar chart.
+```
+
+---
+
+# React Hook: `useMemo` 🧠
+
+The `useMemo` hook in React is used to memoize the result of a computation, preventing unnecessary recalculations during re-renders. It helps optimize performance by ensuring that expensive calculations are only performed when their dependencies change.
+
+---
+
+## Why Use `useMemo`? 🤔
+
+1. **Optimize Expensive Calculations**: Avoid recalculating values that are computationally expensive unless dependencies change.
+2. **Improve Performance**: Reduce the amount of work React needs to do during renders.
+
+---
+
+## Syntax 🛠️
+
+```javascript
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+- **Callback function**: A function that computes the memoized value.
+- **Dependencies**: An array of dependencies that trigger the re-computation when they change.
+
+---
+
+## Example Use Cases 🚀
+
+Here are 6 examples showcasing the power of `useMemo`:
+
+### 1. **Basic Example** 📋
+
+```javascript
+import React, { useMemo, useState } from 'react';
+
+function ExpensiveCalculation() {
+  const [count, setCount] = useState(0);
+  const [otherState, setOtherState] = useState(0);
+
+  const expensiveCalculation = (num) => {
+    console.log('Calculating...');
+    for (let i = 0; i < 1000000000; i++) {} // Simulate expensive work
+    return num * 2;
+  };
+
+  const memoizedValue = useMemo(() => expensiveCalculation(count), [count]);
+
+  return (
+    <div>
+      <p>Memoized Value: {memoizedValue}</p>
+      <button onClick={() => setCount(count + 1)}>Increment Count</button>
+      <button onClick={() => setOtherState(otherState + 1)}>Change Other State</button>
+    </div>
+  );
+}
+
+export default ExpensiveCalculation;
+```
+
+**Output:**
+```
+[Click "Increment Count"]
+Console logs: "Calculating..."
+[Click "Change Other State"]
+No recalculation happens.
+```
+
+### 2. **Filtering a Large List** 🗂️
+
+```javascript
+import React, { useMemo, useState } from 'react';
+
+function FilterList() {
+  const [query, setQuery] = useState('');
+  const items = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
+
+  const filteredItems = useMemo(() => {
+    console.log('Filtering...');
+    return items.filter((item) => item.toLowerCase().includes(query.toLowerCase()));
+  }, [query, items]);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search..."
+      />
+      <ul>
+        {filteredItems.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default FilterList;
+```
+
+**Output:**
+```
+[Type "ap"]
+Console logs: "Filtering..."
+List updates to show "Apple".
+```
+
+### 3. **Dependency Example** 🔄
+
+```javascript
+import React, { useMemo, useState } from 'react';
+
+function DependencyExample() {
+  const [a, setA] = useState(1);
+  const [b, setB] = useState(1);
+
+  const sum = useMemo(() => {
+    console.log('Calculating sum...');
+    return a + b;
+  }, [a, b]);
+
+  return (
+    <div>
+      <p>Sum: {sum}</p>
+      <button onClick={() => setA(a + 1)}>Increment A</button>
+      <button onClick={() => setB(b + 1)}>Increment B</button>
+    </div>
+  );
+}
+
+export default DependencyExample;
+```
+
+**Output:**
+```
+[Click "Increment A"]
+Console logs: "Calculating sum..."
+[Click "Increment B"]
+Console logs: "Calculating sum..."
+```
+
+### 4. **Avoiding Inline Function Recreation** ✂️
+
+```javascript
+import React, { useMemo } from 'react';
+
+function InlineFunctionExample() {
+  const numbers = [1, 2, 3, 4, 5];
+
+  const squaredNumbers = useMemo(() => numbers.map((num) => num * num), [numbers]);
+
+  return (
+    <div>
+      <p>Squared Numbers: {squaredNumbers.join(', ')}</p>
+    </div>
+  );
+}
+
+export default InlineFunctionExample;
+```
+
+**Output:**
+```
+Squared Numbers: 1, 4, 9, 16, 25
+```
+
+### 5. **Using `useMemo` for Objects** 📦
+
+```javascript
+import React, { useMemo } from 'react';
+
+function MemoizedObject() {
+  const person = useMemo(() => ({ name: 'John', age: 30 }), []);
+
+  return (
+    <div>
+      <p>Name: {person.name}</p>
+      <p>Age: {person.age}</p>
+    </div>
+  );
+}
+
+export default MemoizedObject;
+```
+
+**Output:**
+```
+Name: John
+Age: 30
+```
+
+### 6. **Preventing Child Re-renders** 🧠
+
+```javascript
+import React, { useMemo, useState } from 'react';
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const memoizedValue = useMemo(() => ({ count }), [count]);
+
+  return (
+    <div>
+      <p>Parent Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <Child data={memoizedValue} />
+    </div>
+  );
+}
+
+const Child = React.memo(({ data }) => {
+  console.log('Child rendered');
+  return <p>Child Count: {data.count}</p>;
+});
+
+export default Parent;
+```
+
+**Output:**
+```
+Parent Count: 0
+Child Count: 0
+[Click "Increment"]
+Parent Count: 1
+Child Count: 1
+Child rendered only when `data` changes.
+```
+
+---
+
+## Key Points 📌
+
+1. Use `useMemo` to optimize performance by memoizing expensive computations.
+2. Always include correct dependencies to avoid stale values.
+3. Overusing `useMemo` can add complexity without significant benefits—use it wisely.
+
+---
+
+
+# React Hook: `useEffect` ⚡
+
+The `useEffect` hook in React allows you to perform side effects in your functional components. Common use cases include data fetching, setting up subscriptions, and manually changing the DOM.
+
+---
+
+## Why Use `useEffect`? 🤔
+
+1. **Perform Side Effects**: Run code that interacts with the outside world (e.g., fetching data).
+2. **Lifecycle Management**: Handle component lifecycle methods like `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount` in a single API.
+
+---
+
+## Syntax 🛠️
+
+```javascript
+useEffect(() => {
+  // Your effect logic here
+  return () => {
+    // Cleanup logic (optional)
+  };
+}, [dependencies]);
+```
+
+- **Effect function**: The logic to run after rendering.
+- **Cleanup function**: (Optional) Logic to clean up resources when the component unmounts or dependencies change.
+- **Dependencies**: An array of values that determine when the effect should re-run.
+
+---
+
+## Example Use Cases 🚀
+
+Here are 6 examples demonstrating the power of `useEffect`:
+
+### 1. **Basic Example** 📋
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function Timer() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCount((prevCount) => prevCount + 1);
+    }, 1000);
+
+    return () => clearInterval(timer); // Cleanup on unmount
+  }, []);
+
+  return <p>Count: {count}</p>;
+}
+
+export default Timer;
+```
+
+**Output:**
+```
+Count: 0
+[After 1 second] Count: 1
+[After 2 seconds] Count: 2
+```
+
+### 2. **Data Fetching** 🌐
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function FetchData() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/posts/1')
+      .then((response) => response.json())
+      .then((json) => setData(json));
+  }, []);
+
+  return data ? <p>{data.title}</p> : <p>Loading...</p>;
+}
+
+export default FetchData;
+```
+
+**Output:**
+```
+Loading...
+[Data fetched] Post title appears.
+```
+
+### 3. **Listening to Window Events** 🪟
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function WindowSize() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize); // Cleanup
+  }, []);
+
+  return <p>Window width: {width}px</p>;
+}
+
+export default WindowSize;
+```
+
+**Output:**
+```
+Window width: [Current width]
+[Resize the window] Width updates dynamically.
+```
+
+### 4. **Dependency Example** 🔄
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log(`Count updated to: ${count}`);
+  }, [count]); // Runs only when `count` changes
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+**Output:**
+```
+Count: 0
+[Click "Increment"]
+Count: 1
+Console logs: "Count updated to: 1"
+```
+
+### 5. **Conditional Effects** 🛑
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function ConditionalEffect() {
+  const [showMessage, setShowMessage] = useState(false);
+
+  useEffect(() => {
+    if (showMessage) {
+      console.log('Message is now visible');
+    }
+  }, [showMessage]);
+
+  return (
+    <div>
+      <button onClick={() => setShowMessage(!showMessage)}>
+        {showMessage ? 'Hide' : 'Show'} Message
+      </button>
+      {showMessage && <p>Hello, World!</p>}
+    </div>
+  );
+}
+
+export default ConditionalEffect;
+```
+
+**Output:**
+```
+[Click "Show Message"]
+Message is now visible
+[Click "Hide Message"]
+Message disappears.
+```
+
+### 6. **Cleanup Example** 🧹
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function ToggleTimer() {
+  const [showTimer, setShowTimer] = useState(true);
+
+  return (
+    <div>
+      <button onClick={() => setShowTimer(!showTimer)}>
+        {showTimer ? 'Stop Timer' : 'Start Timer'}
+      </button>
+      {showTimer && <Timer />}
+    </div>
+  );
+}
+
+function Timer() {
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log('Timer running');
+    }, 1000);
+
+    return () => clearInterval(timer); // Cleanup on unmount
+  }, []);
+
+  return <p>Timer is running. Check console logs.</p>;
+}
+
+export default ToggleTimer;
+```
+
+**Output:**
+```
+[Click "Stop Timer"]
+Console logs stop as the timer is cleaned up.
+```
+
+---
+
+## Key Points 📌
+
+1. `useEffect` runs after every render by default.
+2. Use the dependency array to control when the effect re-runs.
+3. Always clean up resources to avoid memory leaks.
+4. For performance-critical apps, consider optimizing the dependency list.
+
+---
